@@ -4,15 +4,42 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com._520.shopping.mapper.CommodityMapper">
 
-    <resultMap id="commodity" type="Commodity">
-        <id property="id" column="commodity.id"/>
-        <result property="name" column="commodity.name"/>
+    <resultMap id="commodityResultMap" type="Commodity">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
         <result property="price" column="price"/>
         <result property="brandName" column="brandName"/>
     </resultMap>
-    <select id="query" resultMap="commodity">
+
+    <sql id="query_where">
+        <where>
+            <if test="keyword != null">
+                AND commodity.name LIKE concat('%',#{keyword},'%') OR brand.name LIKE concat('%',#{keyword},'%')
+            </if>
+            <if test="minPrice != null">
+                AND price > #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                AND price &lt; #{maxPrice}
+            </if>
+            <if test="brandName != null">
+                AND brand.name = #{brandName}
+            </if>
+        </where>
+    </sql>
+    <select id="queryForList" resultMap="commodityResultMap">
         SELECT commodity.id,commodity.name,price,brand.name brandName
         FROM commodity JOIN brand
         ON brand.id = commodity.brand_id
+        <include refid="query_where"/>
+        <if test="pageSize > 0">
+            LIMIT #{begin},#{pageSize}
+        </if>
+    </select>
+
+    <select id="queryForCount" resultType="int">
+        SELECT COUNT(commodity.id) FROM commodity JOIN brand ON brand.id = commodity.brand_id
+        <include refid="query_where"/>
+
     </select>
 </mapper>

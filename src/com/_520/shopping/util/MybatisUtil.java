@@ -29,4 +29,8 @@ public class MybatisUtil {
         // 默认不自动提交事务
         return factory.openSession();
     }
+
+    public static <T>T getMapper(Class<T> aclass){
+        return getSession().getMapper(aclass);
+    }
 }

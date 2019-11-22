@@ -1,4 +1,4 @@
-package com._520.shopping.mapper;
+package com._520.shopping.domain;
 
 public class Commodity {
     private Long id;
