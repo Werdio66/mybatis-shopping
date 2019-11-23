@@ -6,7 +6,6 @@ import com._520.shopping.query.PageResult;
 import com._520.shopping.query.QueryObject;
 import com._520.shopping.service.ICommodityService;
 import com._520.shopping.util.MybatisUtil;
-
 import java.util.Collections;
 import java.util.List;
 

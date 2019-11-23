@@ -28,5 +28,6 @@
 <!--    映射文件    -->
     <mappers>
         <mapper resource="com/_520/shopping/mapper/CommodityMapper.xml"/>
+        <mapper resource="com/_520/shopping/mapper/BrandMapper.xml"/>
     </mappers>
 </configuration>

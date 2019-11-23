@@ -4,13 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com._520.shopping.mapper.CommodityMapper">
 
-    <resultMap id="commodityResultMap" type="Commodity">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="price" column="price"/>
-        <result property="brandName" column="brandName"/>
-    </resultMap>
-
     <sql id="query_where">
         <where>
             <if test="keyword != null">
@@ -27,19 +20,51 @@
             </if>
         </where>
     </sql>
+
+    <resultMap id="commodityResultMap" type="Commodity">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="price" column="price"/>
+<!--        多表查询    -->
+        <association property="brand" javaType="Brand">
+            <id property="id" column="b_id"/>
+            <id property="name" column="b_name"/>
+        </association>
+    </resultMap>
+
+
+    
     <select id="queryForList" resultMap="commodityResultMap">
-        SELECT commodity.id,commodity.name,price,brand.name brandName
-        FROM commodity JOIN brand
-        ON brand.id = commodity.brand_id
+        SELECT c.id,c.name,price,b.id b_id,b.name b_name
+        FROM commodity c JOIN brand b
+        ON b.id = c.brand_id
         <include refid="query_where"/>
         <if test="pageSize > 0">
             LIMIT #{begin},#{pageSize}
         </if>
     </select>
-
     <select id="queryForCount" resultType="int">
-        SELECT COUNT(commodity.id) FROM commodity JOIN brand ON brand.id = commodity.brand_id
+        SELECT COUNT(c.id) FROM commodity c JOIN brand b ON b.id = c.brand_id
         <include refid="query_where"/>
 
     </select>
+
+    <select id="listAll" resultMap="commodityResultMap">
+        SELECT c.id,c.name,price,b.id b_id,b.name b_name
+        FROM commodity c JOIN brand b
+        ON b.id = c.brand_id
+    </select>
+
+    <insert id="save">
+        INSERT INTO commodity (name,price,brand_id) VALUES (#{name},#{price},#{brand.id})
+    </insert>
+
+    <select id="get" resultMap="commodityResultMap">
+        SELECT id,name,price,brand_id FROM commodity WHERE id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE commodity SET name = #{name},price = #{price},brand_id = #{brand.id} WHERE id = #{id}
+    </update>
+    
 </mapper>
